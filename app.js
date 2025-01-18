@@ -1,7 +1,43 @@
 const express = require("express");
 const fs = require("fs");
-
 const app = express();
+
+const nodemailer = require('nodemailer');
+const Minio = require('minio')
+
+// import entire SDK
+import AWS from 'aws-sdk';
+// import AWS object without services
+import AWS from 'aws-sdk/global';
+// import individual service
+import S3 from 'aws-sdk/clients/s3';
+// Cấu hình transporter cho nodemailer để gửi email qua MailHog
+const transporter = nodemailer.createTransport({
+    host: 'smtp.dinhtq.vn',  // Địa chỉ của MailHog
+    port: 1025,        // Cổng SMTP của MailHog
+    secure: false,      // MailHog không yêu cầu SSL
+    tls: {
+        rejectUnauthorized: false  // Bỏ qua xác thực SSL
+    }
+});
+
+// Route để gửi email
+app.get('/send-email', (req, res) => {
+    const mailOptions = {
+        from: '12321321@example.com',
+        to: 'receiver@example.com',
+        subject: 'Test Email from Express.js',
+        text: 'This is a test email sent using MailHog and Express.js'
+    };
+
+    // Gửi email
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return res.status(500).send('Error occurred: ' + error.message);
+        }
+        res.send('Email sent successfully: ' + info.response);
+    });
+});
 
 app.get("/", (req, res) => {
     // We will read file over here 
