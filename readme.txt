@@ -7,3 +7,5 @@
 4. npm install nodemon => add script package.json
 
 - "start": "nodemon app.js" (auto update code, not start node)
+
+5. npm install dotenv

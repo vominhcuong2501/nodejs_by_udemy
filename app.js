@@ -1,13 +1,33 @@
 const express = require("express");
-const fs = require("fs");
-const app = express();
 
-const addMovie = require("./controllers/addmovie");
+const port = 8000
+
+
+require("dotenv").config();
+
+const fs = require("fs");
+
+const addMovie = require("./controllers/addMovie");
 
 const mongoose = require('mongoose');
 
+// connection to mongodb
+mongoose.connect(process.env.mongo_connection, {}).then(() => console.log("MongoDB connected")).catch((err) => console.log(err))
 
-mongoose.connect("mongodb+srv://minhcuongvo2501:123123123@test-dababase.4kteo.mongodb.net/?retryWrites=true&w=majority&appName=test-dababase", {}).then(() => console.log("MongoDB connected")).catch((err) => console.log(err))
+const app = express();
+
+app.use(express.json());
+
+//Models...
+require("./models/movies.model");
+
+// Routes...
+app.post("/api/movies", addMovie);
+
+app.listen(port, () => {
+    console.log("Server connected successfully !")
+})
+
 
 // const nodemailer = require('nodemailer');
 // const Minio = require('minio')
@@ -46,43 +66,39 @@ mongoose.connect("mongodb+srv://minhcuongvo2501:123123123@test-dababase.4kteo.mo
 //     });
 // });
 
-// app.get("/", (req, res) => {
-//     // We will read file over here 
-//     fs.readFile("./data.txt", "utf-8", (err, data) => {
-//         if (err) res.send("There was an error accessing the file!")
+app.get("/", (req, res) => {
+    // We will read file over here 
+    fs.readFile("./data.txt", "utf-8", (err, data) => {
+        if (err) res.send("There was an error accessing the file!")
 
-//         res.send(data);
-//     })
-// })
-
-// app.get("/write-new", (req, res) => {
-//     // write new data in file
-//     fs.writeFile("./data.txt", "Cellphone", (err) => {
-//         if (err) res.send("Error writing file!")
-
-//         res.send("Data written successfully!")
-//     })
-// })
-
-// app.get("/write-add", (req, res) => {
-//     // write add data in file
-//     // if file not exsist, it will be create new file
-//     fs.appendFile("./data.txt", "\nThegioididong", (err) => {
-//         if (err) res.send("Error writing file!")
-
-//         res.send("Data written successfully!")
-//     })
-// })
-
-// app.get("/fruits", (req, res) => {
-//     res.send("This is for  fruit")
-// })
-
-app.post("/api/movies", addMovie);
-
-app.listen(8000, () => {
-    console.log("Server connected successfully !")
+        res.send(data);
+    })
 })
+
+app.get("/write-new", (req, res) => {
+    // write new data in file
+    fs.writeFile("./data.txt", "Cellphone", (err) => {
+        if (err) res.send("Error writing file!")
+
+        res.send("Data written successfully!")
+    })
+})
+
+app.get("/write-add", (req, res) => {
+    // write add data in file
+    // if file not exsist, it will be create new file
+    fs.appendFile("./data.txt", "\nThegioididong", (err) => {
+        if (err) res.send("Error writing file!")
+
+        res.send("Data written successfully!")
+    })
+})
+
+app.get("/fruits", (req, res) => {
+    res.send("This is for  fruit")
+})
+
+
 
 
 
