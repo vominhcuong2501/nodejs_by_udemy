@@ -1,17 +1,22 @@
+// use express
 const express = require("express");
 
+// config port
 const port = 8000
-
 
 require("dotenv").config();
 
 const fs = require("fs");
 
-const addMovie = require("./controllers/addMovie");
-
-const mongoose = require('mongoose');
+// import controllers
+const addMovie = require("./controllers/addNewMovie");
+const getAllMovies = require("./controllers/getAllMovies");
+const getSingleMovie = require("./controllers/getSingleMovie");
+const editMovie = require("./controllers/editMovie");
+const deleteMovie = require("./controllers/deleteMovie");
 
 // connection to mongodb
+const mongoose = require('mongoose');
 mongoose.connect(process.env.mongo_connection, {}).then(() => console.log("MongoDB connected")).catch((err) => console.log(err))
 
 const app = express();
@@ -23,6 +28,14 @@ require("./models/movies.model");
 
 // Routes...
 app.post("/api/movies", addMovie);
+app.get("/api/movies", getAllMovies);
+app.get("/api/movies/:movie_id", getSingleMovie);
+app.patch("/api/movies/:movie_id", editMovie);
+app.delete("/api/movies/:movie_id", deleteMovie);
+
+
+
+
 
 app.listen(port, () => {
     console.log("Server connected successfully !")
