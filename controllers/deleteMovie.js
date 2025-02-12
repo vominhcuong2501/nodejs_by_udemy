@@ -4,8 +4,14 @@ const moviesModel = require('../models/movies.model')
 const deleteMovie = async (req, res) => {
     // const moviesModel = moongose.model("movies")
 
+    const movie_id = req.params.movie_id
+
     try {
-        await moviesModel.deleteOne({ _id: req.params.movie_id });
+        const getMovie = await moviesModel.findOne({ _id: movie_id })
+
+        if (!getMovie) throw "Movie not found"
+
+        await moviesModel.deleteOne({ _id: movie_id });
 
     } catch (error) {
         res.status(400).json({
