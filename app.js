@@ -17,6 +17,7 @@ const deleteMovie = require("./controllers/deleteMovie");
 
 // connection to mongodb
 const mongoose = require('mongoose');
+const movieRecommendation = require("./controllers/movieRecommendation");
 mongoose.connect(process.env.mongo_connection, {}).then(() => console.log("MongoDB connected")).catch((err) => console.log(err))
 
 const app = express();
@@ -32,6 +33,7 @@ app.get("/api/movies", getAllMovies);
 app.get("/api/movies/:movie_id", getSingleMovie);
 app.patch("/api/movies/:movie_id", editMovie);
 app.delete("/api/movies/:movie_id", deleteMovie);
+app.get("/api/movies/openai/getRecommendations", movieRecommendation);
 
 
 
